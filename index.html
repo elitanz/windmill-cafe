@@ -59,9 +59,8 @@
 
   /* ---------- NAV ---------- */
   .nav{position:fixed;top:0;left:0;right:0;z-index:60;display:flex;align-items:center;justify-content:space-between;padding:14px 28px;
-    background:rgba(251,242,224,.9);backdrop-filter:blur(10px);border-bottom:1px solid transparent;
-    transform:translateY(-120%);opacity:0;transition:transform .6s cubic-bezier(.2,.8,.2,1),opacity .6s,background .4s}
-  body.nav-show .nav{transform:none;opacity:1;border-bottom-color:var(--line)}
+    background:rgba(251,242,224,.93);backdrop-filter:blur(10px);border-bottom:1px solid transparent;transition:border-color .4s,box-shadow .4s,background .4s}
+  body.nav-show .nav{border-bottom-color:var(--red);box-shadow:0 8px 24px -16px rgba(60,30,10,.5)}
   .brand{font-family:"Pacifico",cursive;font-size:1.55rem;color:var(--red);line-height:1}
   .brand small{display:block;font-family:"Manrope";font-weight:700;font-size:.56rem;letter-spacing:.36em;color:var(--ink2);text-transform:uppercase;margin-top:2px}
   .nav-links{display:flex;gap:30px;align-items:center}
@@ -161,7 +160,7 @@
   .visit .row span{color:var(--ink2)}
   .visit .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:26px}
   .map{border-radius:18px;overflow:hidden;min-height:380px;border:4px solid var(--cream);box-shadow:0 20px 40px -28px rgba(60,30,10,.5)}
-  .map iframe{width:100%;height:100%;min-height:380px;border:0;filter:saturate(1.05)}
+  .map iframe{width:100%;height:100%;min-height:380px;border:0}
 
   .cta-band{background:var(--red);color:var(--cream);text-align:center}
   .cta-band h2{font-size:clamp(2.1rem,5vw,3.6rem);color:var(--cream)}
@@ -179,6 +178,19 @@
   .foot small{color:#bda584}
   .demo-tag{position:fixed;left:14px;bottom:14px;z-index:80;background:rgba(36,26,18,.92);border:1px solid rgba(224,154,46,.4);color:var(--mustard);font-size:.72rem;letter-spacing:.1em;padding:7px 12px;border-radius:999px}
 
+  /* keep hero text from cramming on phones */
+  @media(max-width:560px){
+    .nav{padding:10px 16px}
+    .brand{font-size:1.3rem}
+    .brand small{font-size:.5rem;letter-spacing:.28em}
+    .nav .btn{padding:9px 15px;font-size:.82rem}
+    .cap{padding:0 16px;gap:.3em}
+    .cap-title{font-size:clamp(2.6rem,11vw,3.4rem)}
+    .cap-line{font-size:clamp(1.9rem,7.2vw,2.6rem)}
+    .cap-sub{font-size:.78rem;letter-spacing:.1em}
+    .cap-ey{font-size:1rem}
+    .cap-note{font-size:.95rem}
+  }
   @media (prefers-reduced-motion: reduce){.reveal{opacity:1;transform:none}.startcue .wheel::after{animation:none}}
 </style>
 </head>
@@ -200,7 +212,7 @@
     <div class="stage" id="stage">
       <canvas id="frameCanvas"></canvas>
       <video id="heroVideo" src="hero.mp4" poster="poster.jpg" muted loop playsinline preload="none"></video>
-      <img id="heroPoster" src="poster.jpg" alt="Golden pancakes cooking on the griddle at Windmill Cafe" />
+      <img id="heroPoster" src="poster.jpg" alt="Golden sunrise over a Minnesota field" />
       <div class="stage-overlay"></div>
 
       <div class="caps">
@@ -343,7 +355,7 @@
           </div>
         </div>
         <div class="map reveal d1">
-          <iframe title="Map to Windmill Cafe, Savage MN" loading="lazy" src="https://www.openstreetmap.org/export/embed.html?bbox=-93.38%2C44.735%2C-93.33%2C44.762&layer=mapnik&marker=44.7487%2C-93.3552"></iframe>
+          <iframe title="Map to Windmill Cafe, Savage MN" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d3000!2d-93.3552!3d44.7487!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f15!5e0!3m2!1sen!2sus!4v1718900000000"></iframe>
         </div>
       </div>
     </section>
@@ -375,11 +387,12 @@
 <script>
 (function(){
   "use strict";
-  var FRAME_COUNT = 131;
-  var framePath = function(n){ return "frames/f" + String(n).padStart(3, "0") + ".jpg"; };
+  var FRAME_COUNT = 130;
+  var FRAME_DIR = (window.innerWidth < 768) ? "frames-sm" : "frames";   // lighter set on phones
+  var framePath = function(n){ return FRAME_DIR + "/f" + String(n).padStart(3, "0") + ".jpg"; };
 
   var reduce  = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var canScrub = !reduce && window.matchMedia("(min-width:768px) and (pointer:fine)").matches;
+  var canScrub = !reduce;   // scrub on desktop AND mobile; only reduced-motion gets the static poster
 
   var section = document.getElementById("scrollHero");
   var stage   = document.getElementById("stage");
@@ -395,11 +408,9 @@
   function band(p,a,b){ var v=(p-a)/(b-a); return v<0?0:(v>1?1:v); }
   function seg(p, inS,inE, outS,outE){ return Math.min(band(p,inS,inE), 1-band(p,outS,outE)); }
 
-  if(!canScrub){
-    document.body.classList.add("fallback");
+  if(!canScrub){            // reduced-motion only — clean static poster, no scrub
+    document.body.classList.add("fallback", "show-poster");
     cap1.style.opacity = 1;
-    if(reduce){ document.body.classList.add("show-poster"); }
-    else { document.body.classList.add("show-video"); video.play().catch(function(){}); }
     if(loadNote) loadNote.style.display = "none";
     if(startCue) startCue.style.opacity = 0;
     initReveals(); initCounts(); initNav();
