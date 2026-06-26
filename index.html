@@ -67,11 +67,30 @@
   .nav-links a{font-size:.92rem;color:var(--ink2);font-weight:600;transition:color .25s}
   .nav-links a:hover{color:var(--red)}
   .btn{display:inline-flex;align-items:center;gap:8px;padding:11px 22px;border-radius:999px;font-weight:700;font-size:.92rem;
-    background:var(--red);color:var(--cream);border:2px solid var(--red);transition:transform .25s,box-shadow .25s,background .25s;cursor:pointer}
+    background:var(--red);color:#fff;border:2px solid var(--red-dk);transition:transform .25s,box-shadow .25s,background .25s;cursor:pointer}
   .btn:hover{transform:translateY(-2px);box-shadow:0 12px 28px -12px rgba(187,45,39,.7);background:var(--red-dk)}
   .btn.ghost{background:transparent;color:var(--ink);border-color:var(--ink)}
   .btn.ghost:hover{border-color:var(--red);color:var(--red);box-shadow:none;background:transparent}
-  @media(max-width:760px){.nav-links a:not(.btn){display:none}}
+  .nav-toggle{display:none;position:relative;width:44px;height:40px;background:transparent;border:2px solid var(--red);border-radius:10px;cursor:pointer}
+  .nav-toggle span{position:absolute;left:50%;top:50%;width:22px;height:2px;background:var(--ink);border-radius:1px;transition:transform .3s ease,opacity .2s ease}
+  .nav-toggle span:nth-child(1){transform:translate(-50%,-50%) translateY(-6px)}
+  .nav-toggle span:nth-child(2){transform:translate(-50%,-50%)}
+  .nav-toggle span:nth-child(3){transform:translate(-50%,-50%) translateY(6px)}
+  body.menu-open .nav-toggle span:nth-child(1){transform:translate(-50%,-50%) rotate(45deg)}
+  body.menu-open .nav-toggle span:nth-child(2){opacity:0}
+  body.menu-open .nav-toggle span:nth-child(3){transform:translate(-50%,-50%) rotate(-45deg)}
+  @media(max-width:760px){
+    .nav{flex-wrap:wrap}
+    .nav-toggle{display:flex}
+    .nav-links{position:absolute;top:100%;left:0;right:0;flex-direction:column;align-items:stretch;gap:0;
+      background:var(--ink);border-top:3px solid var(--red);box-shadow:0 24px 50px -14px rgba(36,26,18,.6);
+      padding:4px 0 14px;max-height:0;overflow:hidden;transition:max-height .35s ease}
+    body.menu-open .nav-links{max-height:460px}
+    .nav-links a{display:block;padding:15px 28px;font-size:1.04rem;color:var(--cream);font-weight:600;border-top:1px solid rgba(255,247,233,.12)}
+    .nav-links a:hover{color:var(--mustard)}
+    .nav-links a:first-child{border-top:0}
+    .nav-links a.btn{margin:12px 28px 0;justify-content:center;background:var(--red);color:#fff;border-color:var(--red-dk)}
+  }
 
   /* ---------- SCROLL-SCRUB HERO ---------- */
   .scrollhero{position:relative;height:340vh;background:#1a120a}
@@ -197,7 +216,7 @@
 <body>
 
   <nav class="nav">
-    <div class="brand">Windmill Cafe<small>Savage, Minnesota</small></div>
+    <a class="brand" href="#scrollHero" aria-label="Back to top">Windmill Cafe<small>Savage, Minnesota</small></a>
     <div class="nav-links">
       <a href="#story">Our Story</a>
       <a href="#menu">Menu</a>
@@ -205,6 +224,9 @@
       <a href="#visit">Visit</a>
       <a class="btn" href="tel:+19528951869">Call Us</a>
     </div>
+    <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
   </nav>
 
   <!-- HERO: scroll scrubs the griddle, frame by frame -->
@@ -269,22 +291,32 @@
         </div>
         <div class="menu">
           <div class="mcol reveal d1">
-            <h3>Hearty Breakfast</h3>
-            <div class="mitem"><span><span class="mn">Chicken-Fried Steak</span><span class="md">Cube steak in zippy, peppery breading under house sausage gravy, with two eggs over-easy and hash browns.</span></span><span class="mp">$8.50</span></div>
-            <div class="mitem"><span><span class="mn">Biscuits &amp; Sausage Gravy</span><span class="md">Split biscuits smothered in peppery sausage gravy. A full order will hold you till supper.</span></span><span class="mp">$6.00</span></div>
-            <div class="mitem"><span><span class="mn">Eggs Benedict</span><span class="md">English muffin, runny eggs, crispy fried ham and tangy hollandaise, with hash browns.</span></span><span class="mp">$8.00</span></div>
-            <div class="mitem"><span><span class="mn">The Big Country Skillet</span><span class="md">Eggs, hash browns and the works on one plate — ask your server for today&rsquo;s build.</span></span><span class="mp">ask</span></div>
+            <h3>Southern Breakfast</h3>
+            <div class="mitem"><span><span class="mn">Biscuits &amp; Sausage Gravy</span><span class="md">Split biscuits smothered in peppery sausage gravy.</span></span><span class="mp">$6.35</span></div>
+            <div class="mitem"><span><span class="mn">Breakfast Sandwich</span><span class="md">Your choice of meat — bacon, ham or sausage — and cheese.</span></span><span class="mp">$6.10</span></div>
           </div>
           <div class="mcol reveal d2">
-            <h3>Griddle &amp; Sides</h3>
-            <div class="mitem"><span><span class="mn">Buttermilk Pancakes</span><span class="md">Golden off our seasoned griddle — short stack or full. Add real butter and warm syrup.</span></span><span class="mp">ask</span></div>
-            <div class="mitem"><span><span class="mn">Famous Hash Browns</span><span class="md">Huge, warm and fluffy, perfectly browned. The side everyone writes home about.</span></span><span class="mp">ask</span></div>
-            <div class="mitem"><span><span class="mn">Build-Your-Own Omelette</span><span class="md">Three eggs, your fillings, hash browns and toast on the side.</span></span><span class="mp">ask</span></div>
-            <div class="mitem"><span><span class="mn">Extra-Crispy Bacon</span><span class="md">Done just how you like it — crisp, not greasy.</span></span><span class="mp">ask</span></div>
-            <div class="mitem"><span><span class="mn">Bottomless Coffee</span><span class="md">Your cup never goes empty. That&rsquo;s a promise.</span></span><span class="mp">$ &bull;</span></div>
+            <h3>Three-Egg Omelettes</h3>
+            <div class="mitem"><span><span class="mn">Veggie Omelette</span><span class="md">Green peppers, onions, tomatoes, mushrooms &amp; cheese, with hash browns and toast.</span></span><span class="mp">$9.65</span></div>
+            <div class="mitem"><span><span class="mn">Ham &amp; Cheese Omelette</span><span class="md">Diced ham &amp; cheese, with hash browns and toast.</span></span><span class="mp">$8.80</span></div>
+          </div>
+          <div class="mcol reveal d1">
+            <h3>Eggs, Pancakes &amp; French Toast</h3>
+            <div class="mitem"><span><span class="mn">Corned Beef Hash &amp; Two Eggs</span><span class="md">Served with toast.</span></span><span class="mp">$8.30</span></div>
+            <div class="mitem"><span><span class="mn">Gourmet Hash Browns &amp; Two Eggs</span><span class="md">Green peppers, onions, mushrooms, cheese and choice of ham, bacon or sausage, with toast.</span></span><span class="mp">$8.80</span></div>
+          </div>
+          <div class="mcol reveal d2">
+            <h3>Lunch</h3>
+            <div class="mitem"><span><span class="mn">Swiss &amp; Mushroom Cheeseburger</span></span><span class="mp">$7.50</span></div>
+            <div class="mitem"><span><span class="mn">Bacon Cheeseburger</span></span><span class="mp">$7.95</span></div>
+          </div>
+          <div class="mcol reveal d1">
+            <h3>Dinners &amp; Salads</h3>
+            <div class="mitem"><span><span class="mn">Chef Salad</span></span><span class="mp">$9.05</span></div>
+            <div class="mitem"><span><span class="mn">6 oz Steak</span></span><span class="mp">$9.30</span></div>
           </div>
         </div>
-        <p class="menu-note reveal">Priced items confirmed from past reviews — full menu &amp; current prices available in-house or by phone. Call <a href="tel:+19528951869" style="color:var(--red);font-weight:700">(952) 895-1869</a>.</p>
+        <p class="menu-note reveal">A sampling of the menu — the full menu and current prices are available in-house or by phone. Call <a href="tel:+19528951869" style="color:var(--red);font-weight:700">(952) 895-1869</a>.</p>
       </div>
     </section>
 
@@ -413,7 +445,7 @@
     cap1.style.opacity = 1;
     if(loadNote) loadNote.style.display = "none";
     if(startCue) startCue.style.opacity = 0;
-    initReveals(); initCounts(); initNav();
+    initReveals(); initCounts(); initNav(); initMenu();
     return;
   }
 
@@ -482,9 +514,20 @@
     window.scrollTo({ top: section.offsetTop + p*total, behavior:"instant" });
     update();
   };
-  initReveals(); initCounts(); initNav();
+  initReveals(); initCounts(); initNav(); initMenu();
 
   function initNav(){ document.body.classList.toggle("nav-show", window.scrollY > window.innerHeight * 0.7); }
+  function initMenu(){
+    var t=document.getElementById("navToggle");
+    if(!t) return;
+    t.addEventListener("click", function(){
+      var open=document.body.classList.toggle("menu-open");
+      t.setAttribute("aria-expanded", open?"true":"false");
+    });
+    document.querySelectorAll(".nav-links a, .brand").forEach(function(a){
+      a.addEventListener("click", function(){ document.body.classList.remove("menu-open"); t.setAttribute("aria-expanded","false"); });
+    });
+  }
   function initReveals(){
     var io = new IntersectionObserver(function(entries){
       entries.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add("in"); io.unobserve(en.target); } });
